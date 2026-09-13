@@ -13,16 +13,16 @@
   --navy-2:#0b1728;
   --blue:#1268d8;
   --cyan:#2ec5ff;
-  --gold:#d8b36a;
+  --gold:#daaa4a;
   --cream:#f5f1e8;
-  --white:#ffffff;
+  --white:#fff;
   --muted:#9fb0c5;
   --line:rgba(255,255,255,.12);
-  --glass:rgba(7,17,31,.68);
-  --shadow:0 30px 90px rgba(0,0,0,.28);
   --radius:24px;
   --max:1240px;
+  --nav-height:82px;
 }
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
@@ -32,271 +32,679 @@ body{
   line-height:1.6;
   overflow-x:hidden;
 }
+body.menu-open{overflow:hidden}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
-.container{width:min(100% - 40px,var(--max));margin:auto}
+button{font:inherit}
+.container{width:min(calc(100% - 40px),var(--max));margin-inline:auto}
 
-/* HERO ALIGNMENT */
-@media(min-width:1200px){
-  .hero > .container{width:min(100% - 80px, 1240px);}
-  .hero-content{padding-left:0;transform:none;}
-}
-
-/* NAV */
+/* =========================
+   NAVIGATION
+========================= */
 .site-nav{
-  position:fixed;inset:0 0 auto 0;z-index:1000;
-  padding:18px 0;
-  transition:.35s ease;
+  position:fixed;
+  inset:0 0 auto;
+  z-index:1000;
+  padding:14px 0;
+  transition:background .35s ease, padding .35s ease, box-shadow .35s ease;
 }
 .site-nav.scrolled{
-  background:rgba(7,17,31,.84);
+  background:rgba(7,17,31,.88);
   backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--line);
-  padding:12px 0;
+  padding:8px 0;
+  box-shadow:0 12px 35px rgba(0,0,0,.16);
 }
-.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:30px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.08em}
-.brand-mark{
-  width:40px;height:40px;border:1px solid rgba(216,179,106,.7);
-  border-radius:50%;display:grid;place-items:center;
-  position:relative;overflow:hidden;
+.nav-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
 }
-.brand-mark:before{
-  content:"";width:18px;height:18px;border:2px solid var(--gold);
-  transform:rotate(45deg);display:block;
+.brand{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  width:max-content;
+  z-index:1002;
 }
-.brand-text{font-size:14px}
-.brand-text span{display:block;color:var(--gold);font-size:9px;letter-spacing:.2em;margin-top:-2px}
-.nav-links{display:flex;align-items:center;gap:28px}
-.nav-links a{font-size:13px;color:#dfe7f2;position:relative}
-.nav-links a:after{
-  content:"";position:absolute;left:0;bottom:-7px;width:0;height:1px;background:var(--gold);transition:.3s
+.brand-logo{
+  width:230px;
+  height:auto;
+  max-height:72px;
+  object-fit:contain;
+  object-position:left center;
+  transition:transform .35s ease, opacity .35s ease, width .35s ease;
 }
-.nav-links a:hover:after{width:100%}
+.brand:hover .brand-logo{
+  transform:translateY(-1px);
+  opacity:.94;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:27px;
+}
+.nav-links a{
+  position:relative;
+  color:#dce5f0;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+  padding:8px 0;
+}
+.nav-links a:not(.nav-cta)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0;
+  height:1px;
+  background:var(--gold);
+  transition:width .3s ease;
+}
+.nav-links a:not(.nav-cta):hover::after{width:100%}
 .nav-cta{
-  padding:11px 17px;border:1px solid rgba(216,179,106,.7);border-radius:999px;
-  color:var(--cream)!important;transition:.3s
+  padding:11px 17px!important;
+  border:1px solid rgba(218,170,74,.7);
+  border-radius:999px;
+  color:var(--cream)!important;
+  transition:.3s ease;
 }
-.nav-cta:hover{background:var(--gold);color:var(--navy)!important}
-.menu-btn{display:none;background:none;border:0;color:white;font-size:28px;cursor:pointer}
+.nav-cta:hover{
+  background:var(--gold);
+  color:var(--navy)!important;
+  transform:translateY(-2px);
+}
+.menu-btn{
+  display:none;
+  width:44px;
+  height:44px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  cursor:pointer;
+  z-index:1002;
+}
 
-/* HERO — image must be /images/hero-vision-tomorrow.png */
+/* =========================
+   HERO
+========================= */
 .hero{
   min-height:100svh;
+  min-height:100dvh;
   position:relative;
   display:flex;
   align-items:center;
   isolation:isolate;
   overflow:hidden;
-  background-color:#06111f;
-  background-image:url(images/Nairobi\ \(2\).png);
+  background:#06111f;
+}
+.hero-bg{
+  position:absolute;
+  inset:-7%;
+  z-index:-3;
+  background-image:url("./images/254.JPG");
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center center;
+  transform:translate3d(0,var(--hero-parallax,0px),0) scale(1.08);
+  will-change:transform;
+  transition:transform .08s linear;
 }
-.hero:before{
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(3,10,20,.90) 0%,rgba(3,10,20,.70) 32%,rgba(3,10,20,.22) 69%,rgba(3,10,20,.42) 100%),
+    linear-gradient(0deg,rgba(7,17,31,.76) 0%,rgba(7,17,31,.08) 50%,rgba(7,17,31,.22) 100%);
+}
+.hero::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:-1;
-  background:linear-gradient(0deg,rgba(7,17,31,.80) 0%,rgba(7,17,31,.08) 52%,rgba(7,17,31,.18) 100%);
   pointer-events:none;
+  background:radial-gradient(circle at 72% 48%,rgba(46,197,255,.08),transparent 28%);
+}
+.hero-inner{
+  width:min(calc(100% - 40px),var(--max));
+  margin-inline:auto;
+  position:relative;
+  z-index:2;
 }
 .hero-content{
-  padding-top:100px;
-  max-width:760px;
   width:100%;
-  margin-left:0;
-  margin-right:auto;
+  max-width:780px;
+  padding-top:var(--nav-height);
+  padding-bottom:80px;
   text-align:left;
 }
-.hero .container{position:relative;z-index:1}
 .hero h1{
-  font-size:clamp(48px,7vw,96px);line-height:.94;letter-spacing:-.055em;
-  font-weight:850;max-width:800px
+  font-size:clamp(48px,7vw,96px);
+  line-height:.94;
+  letter-spacing:-.055em;
+  font-weight:850;
+  max-width:800px;
 }
 .hero h1 span{color:var(--gold)}
-.hero-lead{font-size:clamp(17px,2vw,21px);color:#e0e8f3;max-width:650px;margin:28px 0 34px}
-.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-lead{
+  font-size:clamp(17px,2vw,21px);
+  line-height:1.55;
+  color:#e0e8f3;
+  max-width:650px;
+  margin:28px 0 34px;
+}
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  padding:14px 20px;border-radius:999px;font-weight:750;font-size:13px;
-  transition:.35s ease;cursor:pointer
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 20px;
+  border-radius:999px;
+  font-weight:750;
+  font-size:13px;
+  transition:.35s ease;
+  cursor:pointer;
 }
-.btn-primary{background:var(--white);color:var(--navy)}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 35px rgba(0,0,0,.25)}
-.btn-outline{border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.06);backdrop-filter:blur(10px)}
-.btn-outline:hover{border-color:var(--gold);transform:translateY(-3px)}
+.btn-primary{background:#fff;color:var(--navy)}
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 35px rgba(0,0,0,.25);
+}
+.btn-outline{
+  border:1px solid rgba(255,255,255,.32);
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.btn-outline:hover{
+  border-color:var(--gold);
+  transform:translateY(-3px);
+}
 .hero-scroll{
-  position:absolute;left:50%;bottom:28px;transform:translateX(-50%);
-  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#c8d2df;
-  display:flex;flex-direction:column;align-items:center;gap:10px
+  position:absolute;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  z-index:3;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#c8d2df;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
 }
-.hero-scroll i{width:1px;height:44px;background:linear-gradient(var(--gold),transparent);animation:scrollPulse 1.7s infinite}
+.hero-scroll i{
+  width:1px;
+  height:44px;
+  background:linear-gradient(var(--gold),transparent);
+  animation:scrollPulse 1.7s infinite;
+}
 
-/* SECTION SYSTEM */
+/* =========================
+   SECTION SYSTEM
+========================= */
 section{padding:110px 0;position:relative}
-.section-kicker{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:14px}
-.section-title{font-size:clamp(34px,5vw,64px);line-height:1.02;letter-spacing:-.045em;max-width:800px}
-.section-copy{color:var(--muted);max-width:720px;font-size:16px;margin-top:20px}
+.section-kicker{
+  font-size:10px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:800;
+  margin-bottom:14px;
+}
+.section-title{
+  font-size:clamp(34px,5vw,64px);
+  line-height:1.02;
+  letter-spacing:-.045em;
+  max-width:800px;
+}
+.section-copy{
+  color:var(--muted);
+  max-width:720px;
+  font-size:16px;
+  margin-top:20px;
+}
 .dark-section{background:var(--navy)}
 .light-section{background:var(--cream);color:var(--navy)}
 .light-section .section-copy{color:#5d6878}
 
-/* VISION */
-.vision-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:end}
-.timeline{margin-top:50px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.timeline-card{background:var(--navy);padding:28px;min-height:190px}
-.timeline-year{font-size:42px;font-weight:850;color:var(--gold);letter-spacing:-.05em}
+/* =========================
+   VISION
+========================= */
+.vision-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:70px;
+  align-items:end;
+}
+.timeline{
+  margin-top:50px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.timeline-card{
+  background:var(--navy);
+  padding:28px;
+  min-height:190px;
+}
+.timeline-year{
+  font-size:42px;
+  font-weight:850;
+  color:var(--gold);
+  letter-spacing:-.05em;
+}
 .timeline-card h3{font-size:17px;margin:8px 0}
 .timeline-card p{color:var(--muted);font-size:13px}
 
-/* DATA STRIP */
-.data-strip{background:#0a1627;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+/* =========================
+   DATA
+========================= */
+.data-strip{
+  background:#0a1627;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
 .data-grid{display:grid;grid-template-columns:repeat(4,1fr)}
-.data-card{padding:34px 26px;border-right:1px solid var(--line)}
+.data-card{
+  padding:34px 26px;
+  border-right:1px solid var(--line);
+}
 .data-card:last-child{border-right:0}
-.data-number{font-size:clamp(30px,4vw,48px);font-weight:850;letter-spacing:-.05em;color:var(--white)}
+.data-number{
+  font-size:clamp(30px,4vw,48px);
+  font-weight:850;
+  letter-spacing:-.05em;
+}
 .data-label{color:var(--muted);font-size:12px;margin-top:4px}
 
-/* ECOSYSTEM */
-.eco-header{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}
-.eco-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+/* =========================
+   ECOSYSTEM
+========================= */
+.eco-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:30px;
+  margin-bottom:42px;
+}
+.eco-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+}
 .eco-card{
-  min-height:330px;border:1px solid #d9d4c8;background:#fff;
-  border-radius:22px;padding:18px;display:flex;flex-direction:column;
-  justify-content:space-between;position:relative;overflow:hidden;
-  transition:.45s cubic-bezier(.2,.8,.2,1)
+  min-height:350px;
+  border:1px solid #d9d4c8;
+  background:#fff;
+  border-radius:22px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease;
 }
-.eco-card:before{
-  content:"";position:absolute;inset:auto -30% -45% -30%;height:55%;
+.eco-card::before{
+  content:"";
+  position:absolute;
+  inset:auto -30% -45% -30%;
+  height:55%;
   background:radial-gradient(circle,rgba(18,104,216,.13),transparent 65%);
-  transition:.45s
+  transition:.45s;
+  pointer-events:none;
 }
-.eco-card:hover{transform:translateY(-10px);box-shadow:0 30px 55px rgba(7,17,31,.14)}
-.eco-card:hover:before{transform:scale(1.25)}
+.eco-card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 30px 55px rgba(7,17,31,.14);
+}
+.eco-card:hover::before{transform:scale(1.25)}
+.eco-card > div{position:relative;z-index:1}
 .logo-wrap{
-  height:130px;border-radius:16px;background:#07111f;
-  display:grid;place-items:center;padding:15px;position:relative;z-index:1
+  height:145px;
+  width:100%;
+  border-radius:16px;
+  background:#07111f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  position:relative;
+  overflow:hidden;
 }
-.logo-wrap img{max-height:95px;width:auto;max-width:90%}
-.eco-number{font-size:10px;letter-spacing:.18em;color:#8a94a3}
-.eco-card h3{font-size:18px;margin:10px 0 5px;color:var(--navy)}
-.eco-card p{font-size:12px;color:#657083}
-.eco-link{margin-top:16px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.12em;text-transform:uppercase}
+.logo-wrap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 55%);
+  pointer-events:none;
+}
+.logo-wrap img{
+  width:auto;
+  height:auto;
+  max-width:92%;
+  max-height:112px;
+  object-fit:contain;
+  object-position:center;
+  margin:auto;
+  position:relative;
+  z-index:1;
+}
+.eco-number{
+  font-size:10px;
+  letter-spacing:.18em;
+  color:#8a94a3;
+  margin-top:15px;
+}
+.eco-card h3{
+  font-size:18px;
+  line-height:1.2;
+  margin:10px 0 5px;
+  color:var(--navy);
+}
+.eco-card p{font-size:12px;line-height:1.55;color:#657083}
+.eco-link{
+  position:relative;
+  z-index:1;
+  margin-top:16px;
+  font-size:11px;
+  font-weight:800;
+  color:var(--blue);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
 
-/* STATE OF KENYA */
+/* =========================
+   STATE OF KENYA
+========================= */
 .state{background:#091728}
-.state-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;margin-top:45px}
-.state-main,.state-side{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
-  overflow:hidden
+.state-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:22px;
+  margin-top:45px;
 }
-.state-main{padding:38px;min-height:430px;display:flex;flex-direction:column;justify-content:space-between}
-.state-main h3{font-size:38px;letter-spacing:-.04em;line-height:1.05;max-width:620px}
+.state-main,.state-side{
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  overflow:hidden;
+}
+.state-main{
+  padding:38px;
+  min-height:430px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.state-main h3{
+  font-size:38px;
+  letter-spacing:-.04em;
+  line-height:1.05;
+  max-width:620px;
+}
 .state-main p{color:var(--muted);max-width:600px}
-.state-side{display:grid;grid-template-rows:1fr 1fr}
+.state-side{display:grid;grid-template-rows:repeat(2,1fr)}
 .state-item{padding:28px;border-bottom:1px solid var(--line)}
 .state-item:last-child{border-bottom:0}
 .state-item strong{font-size:25px;color:var(--gold);display:block}
 .state-item span{font-size:12px;color:var(--muted)}
 
-/* METHOD */
-.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px}
+/* =========================
+   METHOD
+========================= */
+.method-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-top:42px;
+}
 .method{
-  padding:28px;border:1px solid rgba(255,255,255,.12);border-radius:20px;
-  background:rgba(255,255,255,.035);min-height:180px
+  padding:28px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  background:rgba(255,255,255,.035);
+  min-height:180px;
 }
 .method span{font-size:11px;color:var(--gold);letter-spacing:.15em}
 .method h3{margin:30px 0 8px;font-size:18px}
 .method p{font-size:12px;color:var(--muted)}
 
-/* PARTNERSHIP */
+/* =========================
+   PARTNERSHIP
+========================= */
 .partner-section{
   background:
     radial-gradient(circle at 80% 20%,rgba(46,197,255,.14),transparent 28%),
-    linear-gradient(120deg,#0a1728,#06111f)
+    linear-gradient(120deg,#0a1728,#06111f);
 }
 .partner-box{
-  border:1px solid rgba(216,179,106,.3);border-radius:30px;padding:55px;
-  background:linear-gradient(135deg,rgba(216,179,106,.09),rgba(255,255,255,.02));
-  display:flex;align-items:center;justify-content:space-between;gap:40px
+  border:1px solid rgba(218,170,74,.3);
+  border-radius:30px;
+  padding:55px;
+  background:linear-gradient(135deg,rgba(218,170,74,.09),rgba(255,255,255,.02));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:40px;
 }
-.partner-box h2{font-size:clamp(34px,5vw,58px);line-height:1;letter-spacing:-.05em;max-width:750px}
+.partner-box h2{
+  font-size:clamp(34px,5vw,58px);
+  line-height:1;
+  letter-spacing:-.05em;
+  max-width:750px;
+}
 .partner-box p{color:var(--muted);max-width:680px;margin-top:16px}
 
-/* FOOTER */
-footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
-.footer-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:50px;padding-bottom:45px}
+/* =========================
+   FOOTER
+========================= */
+footer{
+  padding:55px 0 30px;
+  background:#040b14;
+  border-top:1px solid var(--line);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr .8fr;
+  gap:50px;
+  padding-bottom:45px;
+}
 .footer-brand{font-size:22px;font-weight:850;letter-spacing:-.03em}
 .footer-brand span{color:var(--gold)}
 .footer-copy{font-size:12px;color:var(--muted);max-width:400px;margin-top:14px}
-.footer-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.17em;color:var(--gold);margin-bottom:15px}
+.footer-col h4{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.17em;
+  color:var(--gold);
+  margin-bottom:15px;
+}
 .footer-col a{display:block;color:#bac6d5;font-size:12px;margin:8px 0}
-.footer-bottom{border-top:1px solid var(--line);padding-top:20px;color:#728095;font-size:10px;display:flex;justify-content:space-between;gap:20px}
+.footer-bottom{
+  border-top:1px solid var(--line);
+  padding-top:20px;
+  color:#728095;
+  font-size:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+}
 
-/* REVEAL ANIMATION */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+/* =========================
+   ANIMATIONS
+========================= */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1);
+}
 .reveal.visible{opacity:1;transform:none}
-.delay-1{transition-delay:.08s}.delay-2{transition-delay:.16s}.delay-3{transition-delay:.24s}
-@keyframes scrollPulse{0%,100%{opacity:.25;transform:scaleY(.65)}50%{opacity:1;transform:scaleY(1)}}
+.delay-1{transition-delay:.08s}
+.delay-2{transition-delay:.16s}
+.delay-3{transition-delay:.24s}
 
-/* RESPONSIVE */
-@media(max-width:1050px){
-  .nav-links{gap:17px}
+@keyframes scrollPulse{
+  0%,100%{opacity:.25;transform:scaleY(.65)}
+  50%{opacity:1;transform:scaleY(1)}
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:1100px){
+  .brand-logo{width:205px}
+  .nav-links{gap:18px}
   .eco-grid{grid-template-columns:repeat(3,1fr)}
   .method-grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:780px){
-  .container{width:min(100% - 28px,var(--max))}
-  section{padding:78px 0}
-  .menu-btn{display:block}
-  .nav-links{
-    position:absolute;top:70px;left:14px;right:14px;
-    background:rgba(7,17,31,.96);backdrop-filter:blur(20px);
-    border:1px solid var(--line);border-radius:18px;padding:16px;
-    flex-direction:column;align-items:stretch;gap:0;
-    opacity:0;pointer-events:none;transform:translateY(-8px);transition:.3s
+
+@media(max-width:820px){
+  .container,.hero-inner{width:min(calc(100% - 32px),var(--max))}
+  section{padding:82px 0}
+
+  .site-nav{padding:10px 0}
+  .brand-logo{
+    width:185px;
+    max-height:62px;
   }
-  .nav-links.open{opacity:1;pointer-events:auto;transform:none}
-  .nav-links a{padding:13px 8px}
-  .nav-cta{text-align:center}
+  .menu-btn{display:inline-flex;align-items:center;justify-content:center}
+
+  .nav-links{
+    position:fixed;
+    top:74px;
+    left:16px;
+    right:16px;
+    max-height:calc(100dvh - 92px);
+    overflow:auto;
+    background:rgba(7,17,31,.97);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:14px;
+    flex-direction:column;
+    align-items:stretch;
+    gap:2px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateY(-10px);
+    transition:opacity .3s ease,transform .3s ease,visibility .3s ease;
+  }
+  .nav-links.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:none;
+  }
+  .nav-links a{
+    padding:14px 10px;
+    border-radius:10px;
+  }
+  .nav-links a:hover{background:rgba(255,255,255,.05)}
+  .nav-links a:not(.nav-cta)::after{display:none}
+  .nav-cta{text-align:center;margin-top:5px}
+
+  /* Keep the same hero image visible on phones.
+     We deliberately do NOT swap to a missing mobile asset. */
   .hero{
     min-height:100svh;
     min-height:100dvh;
-    background-image:url("./images/hero-vision-tomorrow.png");
-    background-repeat:no-repeat;
+  }
+  .hero-bg{
+    inset:-5%;
+    background-image:url("./images/254.JPG");
     background-size:cover;
-    background-position:62% center;
+    background-position:center center;
+    transform:translate3d(0,var(--hero-parallax,0px),0) scale(1.10);
   }
-  .hero:before{
-    background:linear-gradient(180deg,rgba(3,10,20,.28) 0%,rgba(3,10,20,.58) 48%,rgba(3,10,20,.90) 100%);
+  .hero::after{
+    background:
+      linear-gradient(180deg,rgba(3,10,20,.28) 0%,rgba(3,10,20,.48) 43%,rgba(3,10,20,.91) 100%),
+      linear-gradient(90deg,rgba(3,10,20,.64),rgba(3,10,20,.12));
   }
-  .hero-content{padding-top:92px;padding-bottom:80px;max-width:680px;margin-left:0;margin-right:0;text-align:left}
-  .hero h1{max-width:600px}
+  .hero-content{
+    max-width:680px;
+    padding-top:105px;
+    padding-bottom:100px;
+  }
+  .hero h1{max-width:620px}
+  .hero-lead{max-width:600px}
+  .hero-scroll{display:none}
+
   .vision-grid,.state-grid{grid-template-columns:1fr;gap:35px}
   .timeline{grid-template-columns:1fr}
   .data-grid{grid-template-columns:repeat(2,1fr)}
   .data-card:nth-child(2){border-right:0}
   .data-card{border-bottom:1px solid var(--line)}
   .eco-header{display:block}
-  .eco-grid{grid-template-columns:1fr 1fr}
+  .eco-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .partner-box{padding:34px;display:block}
   .partner-box .btn{margin-top:24px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-grid > :first-child{grid-column:1/-1}
 }
-@media(max-width:520px){
-  .hero{background-position:center center}
-  .hero-content{padding-top:84px;padding-bottom:88px}
-  .hero h1{font-size:50px}
-  .hero-lead{font-size:15px}
+
+@media(max-width:560px){
+  .container,.hero-inner{width:min(calc(100% - 28px),var(--max))}
+  section{padding:72px 0}
+
+  .brand-logo{
+    width:170px;
+    max-height:58px;
+  }
+
+  .hero-bg{
+    background-position:58% center;
+    transform:translate3d(0,var(--hero-parallax,0px),0) scale(1.12);
+  }
+  .hero-content{
+    padding-top:105px;
+    padding-bottom:92px;
+  }
+  .hero h1{
+    font-size:clamp(45px,14vw,62px);
+  }
+  .hero-lead{
+    font-size:15px;
+    margin:22px 0 28px;
+  }
+  .hero-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
   .hero-actions .btn{width:100%}
+
   .eco-grid{grid-template-columns:1fr}
+  .eco-card{min-height:335px}
+  .logo-wrap{height:155px}
+  .logo-wrap img{max-width:88%;max-height:118px}
+
   .method-grid{grid-template-columns:1fr}
   .data-grid{grid-template-columns:1fr 1fr}
   .data-card{padding:24px 17px}
+  .data-number{font-size:31px}
   .state-main{padding:28px}
   .state-main h3{font-size:30px}
   .footer-grid{grid-template-columns:1fr}
@@ -304,23 +712,44 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
   .footer-bottom{display:block}
   .footer-bottom span{display:block;margin-top:6px}
 }
+
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*:before,*:after{animation:none!important;transition:none!important}
+  *,*:before,*:after{
+    animation:none!important;
+    transition:none!important;
+  }
   .reveal{opacity:1;transform:none}
+  .hero-bg{
+    transform:scale(1.08)!important;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <header class="site-nav" id="siteNav">
   <div class="container nav-inner">
+
     <a href="#home" class="brand" aria-label="Vision Tomorrow home">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-text">VISION TOMORROW<span>BRIDGING THE FUTURE &amp; TODAY</span></span>
+      <img
+        src="./images/Vision Tomorrow.png"
+        alt="Vision Tomorrow"
+        class="brand-logo"
+        width="264"
+        height="80"
+      >
     </a>
 
-    <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <button
+      class="menu-btn"
+      id="menuBtn"
+      type="button"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="navLinks"
+    >☰</button>
 
     <nav class="nav-links" id="navLinks">
       <a href="#vision">The Vision</a>
@@ -329,88 +758,150 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
       <a href="#method">Our Method</a>
       <a href="#partnership" class="nav-cta">Partner With Us</a>
     </nav>
+
   </div>
 </header>
 
 <main>
+
+<!-- ================= HERO ================= -->
 <section class="hero" id="home">
-  <div class="container hero-content reveal">
-    <div class="eyebrow">Kenya • Evidence • Innovation • People</div>
-    <h1>Understand today.<br><span>Shape tomorrow.</span></h1>
-    <p class="hero-lead">
-      Vision Tomorrow is a research-led media, innovation and public-interest platform
-      connecting Kenya's present realities with its long-term aspirations.
-    </p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#state">Explore the evidence ↗</a>
-      <a class="btn btn-outline" href="#ecosystem">Explore the ecosystem</a>
+
+  <!-- The same image is used on desktop and mobile.
+       Put the image at: images/254.JPG -->
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-content reveal">
+
+      <h1>
+        Understand today.<br>
+        <span>Shape tomorrow.</span>
+      </h1>
+
+      <p class="hero-lead">
+        Vision Tomorrow is a research-led media, innovation and public-interest platform
+        connecting Kenya's present realities with its long-term aspirations.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#state">Explore the evidence ↗</a>
+        <a class="btn btn-outline" href="#ecosystem">Explore the ecosystem</a>
+      </div>
+
     </div>
   </div>
-  <div class="hero-scroll"><span>Scroll to explore</span><i></i></div>
+
+  <div class="hero-scroll">
+    <span>Scroll to explore</span>
+    <i></i>
+  </div>
+
 </section>
 
+<!-- ================= VISION ================= -->
 <section id="vision" class="dark-section">
   <div class="container">
+
     <div class="vision-grid">
+
       <div class="reveal">
-        <div class="section-kicker">01 / The Vision</div>
-        <h2 class="section-title">The space between where Kenya has been and where Kenya wants to go.</h2>
+        <div class="section-kicker">01 / The gap</div>
+        <h2 class="section-title">
+          The bridge between where Kenya has been and where Kenya wants to go.
+        </h2>
       </div>
+
       <div class="reveal delay-1">
         <p class="section-copy">
-          Vision 2030 gave Kenya a destination. Vision Tomorrow focuses on the space between
-          the destination and the day-to-day reality — measuring progress, understanding gaps,
-          amplifying solutions and creating informed public conversations.
+          Vision 2030 gave Kenya a destination. Vision Tomorrow focuses on the space
+          between the destination and the day-to-day reality — measuring progress,
+          understanding gaps, amplifying solutions and creating informed public conversations.
         </p>
       </div>
+
     </div>
 
     <div class="timeline reveal delay-2">
+
       <article class="timeline-card">
         <div class="timeline-year">2008</div>
         <h3>Vision 2030</h3>
         <p>Kenya's long-term development blueprint begins implementation.</p>
       </article>
+
       <article class="timeline-card">
         <div class="timeline-year">2026</div>
         <h3>Where are we?</h3>
         <p>Build the evidence base: what changed, what remains, and who is affected.</p>
       </article>
+
       <article class="timeline-card">
         <div class="timeline-year">2060</div>
         <h3>Where are we going?</h3>
         <p>Help connect today's evidence, ideas and action to Kenya's next long-term chapter.</p>
       </article>
+
     </div>
   </div>
 </section>
 
+<!-- ================= DATA ================= -->
 <section class="data-strip" aria-label="Vision Tomorrow data highlights">
   <div class="container data-grid">
-    <div class="data-card reveal"><div class="data-number">4.6%</div><div class="data-label">Real GDP growth in 2025</div></div>
-    <div class="data-card reveal delay-1"><div class="data-number">822K+</div><div class="data-label">Jobs created in 2025</div></div>
-    <div class="data-card reveal delay-2"><div class="data-number">KSh404.7B</div><div class="data-label">ICT value added in 2025</div></div>
-    <div class="data-card reveal delay-3"><div class="data-number">47</div><div class="data-label">Counties in the national picture</div></div>
+
+    <div class="data-card reveal">
+      <div class="data-number">4.6%</div>
+      <div class="data-label">Real GDP growth in 2025</div>
+    </div>
+
+    <div class="data-card reveal delay-1">
+      <div class="data-number">822K+</div>
+      <div class="data-label">Jobs created in 2025</div>
+    </div>
+
+    <div class="data-card reveal delay-2">
+      <div class="data-number">KSh404.7B</div>
+      <div class="data-label">ICT value added in 2025</div>
+    </div>
+
+    <div class="data-card reveal delay-3">
+      <div class="data-number">47</div>
+      <div class="data-label">Counties in the national picture</div>
+    </div>
+
   </div>
 </section>
 
+<!-- ================= ECOSYSTEM ================= -->
 <section id="ecosystem" class="light-section">
   <div class="container">
+
     <div class="eco-header reveal">
       <div>
         <div class="section-kicker">02 / The Ecosystem</div>
-        <h2 class="section-title">One direction.<br>Many entry points.</h2>
+        <h2 class="section-title">
+          One direction.<br>Many entry points.
+        </h2>
       </div>
+
       <p class="section-copy">
-        A connected ecosystem addressing identity, environment, children, skills and maternal
-        wellbeing — supported by media, research and innovation.
+        A connected ecosystem addressing identity, environment, children, skills and
+        maternal wellbeing — supported by research and innovation.
       </p>
     </div>
 
     <div class="eco-grid">
-      <a class="eco-card reveal" href="https://kabilayetunikenya.github.io/Kabila-yetu-ni-Kenya/" target="_blank" rel="noopener">
+
+      <a class="eco-card reveal"
+         href="https://kabilayetunikenya.github.io/Kabila-yetu-ni-Kenya/"
+         target="_blank" rel="noopener">
         <div>
-          <div class="logo-wrap"><img src="images/logos/kabila-yetu-ni-kenya.svg" alt="Kabila Yetu Ni Kenya logo"></div>
+          <div class="logo-wrap">
+            <img src="./images/KYNK LOGO.png"
+                 alt="Kabila Yetu Ni Kenya logo"
+                 loading="lazy">
+          </div>
           <div class="eco-number">01</div>
           <h3>Kabila Yetu Ni Kenya</h3>
           <p>National identity, citizenship, unity, responsibility and social cohesion.</p>
@@ -418,9 +909,15 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
         <div class="eco-link">Visit platform ↗</div>
       </a>
 
-      <a class="eco-card reveal delay-1" href="https://ecoclub254-alt.github.io/EcoHub/index.html" target="_blank" rel="noopener">
+      <a class="eco-card reveal delay-1"
+         href="https://ecoclub254-alt.github.io/EcoHub/index.html"
+         target="_blank" rel="noopener">
         <div>
-          <div class="logo-wrap"><img src="images/logos/ecohub.svg" alt="EcoHub logo"></div>
+          <div class="logo-wrap">
+            <img src="./images/Ecohub.png"
+                 alt="EcoHub logo"
+                 loading="lazy">
+          </div>
           <div class="eco-number">02</div>
           <h3>EcoHub</h3>
           <p>Environmental action, engineering, waste, recycling, sustainability and innovation.</p>
@@ -428,9 +925,15 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
         <div class="eco-link">Visit platform ↗</div>
       </a>
 
-      <a class="eco-card reveal delay-2" href="https://ecoclub254-alt.github.io/EcoHub/mtoto%20ni%20jamii/index.html" target="_blank" rel="noopener">
+      <a class="eco-card reveal delay-2"
+         href="https://mtotonijamii.github.io/mtotonijamii/"
+         target="_blank" rel="noopener">
         <div>
-          <div class="logo-wrap"><img src="images/logos/mtoto-ni-jamii.svg" alt="Mtoto Ni Jamii logo"></div>
+          <div class="logo-wrap">
+            <img src="./images/MnJlogo.png"
+                 alt="Mtoto Ni Jamii logo"
+                 loading="lazy">
+          </div>
           <div class="eco-number">03</div>
           <h3>Mtoto Ni Jamii</h3>
           <p>Child and youth wellbeing, talent, sport, education and community support.</p>
@@ -438,9 +941,15 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
         <div class="eco-link">Visit platform ↗</div>
       </a>
 
-      <a class="eco-card reveal delay-3" href="https://www.afriskillinnovate.com/" target="_blank" rel="noopener">
+      <a class="eco-card reveal delay-3"
+         href="https://afriskillfoundation.github.io/tech/"
+         target="_blank" rel="noopener">
         <div>
-          <div class="logo-wrap"><img src="images/logos/afriskill.svg" alt="Afriskill logo"></div>
+          <div class="logo-wrap">
+            <img src="./images/Afriskillslogo.png"
+                 alt="Afriskill logo"
+                 loading="lazy">
+          </div>
           <div class="eco-number">04</div>
           <h3>Afriskill</h3>
           <p>Digital capability, product thinking, career growth and innovation readiness.</p>
@@ -448,75 +957,121 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
         <div class="eco-link">Visit platform ↗</div>
       </a>
 
-      <a class="eco-card reveal" href="https://www.sha.go.ke/" target="_blank" rel="noopener">
+      <a class="eco-card reveal"
+         href="https://www.sha.go.ke/"
+         target="_blank" rel="noopener">
         <div>
-          <div class="logo-wrap"><img src="images/logos/linda-mama.svg" alt="Linda Mama logo"></div>
+          <div class="logo-wrap">
+            <img src="./images/logos/linda-mama.svg"
+                 alt="Linda Mama logo"
+                 loading="lazy">
+          </div>
           <div class="eco-number">05</div>
           <h3>Linda Mama</h3>
           <p>Maternal and child wellbeing — pregnancy, birth, postnatal care and family support.</p>
         </div>
         <div class="eco-link">Learn more ↗</div>
       </a>
+
     </div>
   </div>
 </section>
 
+<!-- ================= STATE OF KENYA ================= -->
 <section id="state" class="state">
   <div class="container">
+
     <div class="reveal">
       <div class="section-kicker">03 / State of Kenya</div>
-      <h2 class="section-title">Before we design tomorrow, we need to understand today.</h2>
+      <h2 class="section-title">Evidence before assumptions.</h2>
       <p class="section-copy">
-        Our flagship evidence programme maps Kenya's journey from 2008 to 2026 — progress,
-        gaps, disparities, people, solutions and opportunities.
+        Vision Tomorrow turns national ambition into questions that can be measured:
+        what is improving, what is falling behind, where the gaps are and what solutions
+        are already emerging.
       </p>
     </div>
 
     <div class="state-grid">
-      <article class="state-main reveal">
+
+      <article class="state-main reveal delay-1">
         <div>
-          <div class="section-kicker">2008 → 2026</div>
-          <h3>The State of Kenya</h3>
-          <p style="margin-top:18px">
-            A concise, public-facing national baseline built from official data and connected
-            to lived experience.
-          </p>
+          <div class="section-kicker">The national picture</div>
+          <h3>From headline numbers to the human reality behind them.</h3>
         </div>
-        <a class="btn btn-primary" href="#partnership">Request the evidence brief ↗</a>
+        <p>
+          We connect official statistics, research, lived experience, community voices,
+          innovation and visual storytelling to make Kenya's development conversation
+          clearer and more useful.
+        </p>
       </article>
 
-      <div class="state-side reveal delay-1">
-        <div class="state-item"><strong>12</strong><span>Priority research tracks</span></div>
-        <div class="state-item"><strong>47</strong><span>Counties in the national picture</span></div>
-        <div class="state-item"><strong>1</strong><span>Connected national story</span></div>
+      <div class="state-side reveal delay-2">
+
+        <div class="state-item">
+          <strong>47 Counties</strong>
+          <span>National progress viewed through local realities.</span>
+        </div>
+
+        <div class="state-item">
+          <strong>Evidence → Action</strong>
+          <span>Research translated into public understanding and practical collaboration.</span>
+        </div>
+
       </div>
+
     </div>
   </div>
 </section>
 
+<!-- ================= METHOD ================= -->
 <section id="method" class="dark-section">
   <div class="container">
+
     <div class="reveal">
       <div class="section-kicker">04 / Our Method</div>
-      <h2 class="section-title">From numbers to meaning.</h2>
+      <h2 class="section-title">Research. Translate. Connect. Act.</h2>
       <p class="section-copy">
-        Vision Tomorrow moves from evidence to public understanding and, where appropriate,
-        toward practical action.
+        Vision Tomorrow works across disciplines and audiences to make complex national
+        questions understandable, visible and actionable.
       </p>
     </div>
 
     <div class="method-grid">
-      <article class="method reveal"><span>01</span><h3>Data</h3><p>What do we actually know?</p></article>
-      <article class="method reveal delay-1"><span>02</span><h3>People</h3><p>Who is living with the consequences?</p></article>
-      <article class="method reveal delay-2"><span>03</span><h3>Solutions</h3><p>Who is already responding and what works?</p></article>
-      <article class="method reveal delay-3"><span>04</span><h3>Action</h3><p>What can be improved, replicated or scaled?</p></article>
+
+      <article class="method reveal">
+        <span>01 / RESEARCH</span>
+        <h3>Find the evidence</h3>
+        <p>Track data, policy, research, trends and real-world outcomes.</p>
+      </article>
+
+      <article class="method reveal delay-1">
+        <span>02 / TRANSLATE</span>
+        <h3>Make it understandable</h3>
+        <p>Turn complex information into clear stories, visuals and public insight.</p>
+      </article>
+
+      <article class="method reveal delay-2">
+        <span>03 / CONNECT</span>
+        <h3>Bring voices together</h3>
+        <p>Connect institutions, communities, innovators, media and decision-makers.</p>
+      </article>
+
+      <article class="method reveal delay-3">
+        <span>04 / ACT</span>
+        <h3>Move toward solutions</h3>
+        <p>Create pathways for collaboration, innovation and measurable public value.</p>
+      </article>
+
     </div>
   </div>
 </section>
 
+<!-- ================= PARTNERSHIP ================= -->
 <section id="partnership" class="partner-section">
   <div class="container">
+
     <div class="partner-box reveal">
+
       <div>
         <div class="section-kicker">05 / Partnership</div>
         <h2>Build the future by understanding the present.</h2>
@@ -525,15 +1080,23 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
           institutions, researchers, corporates, foundations, civil society, innovators and communities.
         </p>
       </div>
-      <a class="btn btn-primary" href="mailto:hello@visiontomorrow.example">Start a conversation ↗</a>
+
+      <a class="btn btn-primary" href="mailto:hello@visiontomorrow.example">
+        Start a conversation ↗
+      </a>
+
     </div>
   </div>
 </section>
+
 </main>
 
+<!-- ================= FOOTER ================= -->
 <footer>
   <div class="container">
+
     <div class="footer-grid">
+
       <div>
         <div class="footer-brand">VISION <span>TOMORROW</span></div>
         <p class="footer-copy">
@@ -541,6 +1104,7 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
           present realities with its long-term aspirations.
         </p>
       </div>
+
       <div class="footer-col">
         <h4>Explore</h4>
         <a href="#vision">The Vision</a>
@@ -548,53 +1112,113 @@ footer{padding:55px 0 30px;background:#040b14;border-top:1px solid var(--line)}
         <a href="#ecosystem">Ecosystem</a>
         <a href="#method">Our Method</a>
       </div>
+
       <div class="footer-col">
         <h4>Connect</h4>
         <a href="#partnership">Partnerships</a>
         <a href="mailto:hello@visiontomorrow.example">Email us</a>
         <a href="#home">Back to top ↑</a>
       </div>
+
     </div>
+
     <div class="footer-bottom">
       <span>© 2026 Vision Tomorrow. All rights reserved.</span>
       <span>Understand Today. Shape Tomorrow.</span>
     </div>
+
   </div>
 </footer>
 
 <script>
-const nav = document.getElementById('siteNav');
-const menuBtn = document.getElementById('menuBtn');
-const navLinks = document.getElementById('navLinks');
+/* =========================
+   NAVIGATION
+========================= */
+const nav = document.getElementById("siteNav");
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
 
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
+function updateNav(){
+  nav.classList.toggle("scrolled", window.scrollY > 40);
+}
+updateNav();
+window.addEventListener("scroll", updateNav, {passive:true});
+
+menuBtn.addEventListener("click", () => {
+  const open = navLinks.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  menuBtn.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+  menuBtn.textContent = open ? "×" : "☰";
+  document.body.classList.toggle("menu-open", open);
 });
 
-menuBtn.addEventListener('click', () => {
-  const open = navLinks.classList.toggle('open');
-  menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  menuBtn.textContent = open ? '×' : '☰';
-});
-
-navLinks.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    menuBtn.setAttribute('aria-expanded', 'false');
-    menuBtn.textContent = '☰';
+navLinks.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded", "false");
+    menuBtn.setAttribute("aria-label", "Open navigation");
+    menuBtn.textContent = "☰";
+    document.body.classList.remove("menu-open");
   });
 });
 
+/* =========================
+   REVEAL ANIMATION
+========================= */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if(entry.isIntersecting){
-      entry.target.classList.add('visible');
+      entry.target.classList.add("visible");
       observer.unobserve(entry.target);
     }
   });
 },{threshold:.12});
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+/* =========================
+   HERO PARALLAX
+   Desktop + mobile, automatically
+   softened on small screens.
+========================= */
+const hero = document.querySelector(".hero");
+const heroBg = document.querySelector(".hero-bg");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+let ticking = false;
+
+function updateParallax(){
+  if(!hero || !heroBg || reduceMotion.matches){
+    if(hero) hero.style.setProperty("--hero-parallax","0px");
+    ticking = false;
+    return;
+  }
+
+  const rect = hero.getBoundingClientRect();
+  const viewport = window.innerHeight || document.documentElement.clientHeight;
+
+  if(rect.bottom > 0 && rect.top < viewport){
+    const progress = (viewport - rect.top) / (viewport + rect.height);
+    const distance = window.innerWidth <= 820 ? 22 : 48;
+    const offset = (progress - .5) * distance;
+    hero.style.setProperty("--hero-parallax", offset.toFixed(2) + "px");
+  }
+
+  ticking = false;
+}
+
+function requestParallax(){
+  if(!ticking){
+    window.requestAnimationFrame(updateParallax);
+    ticking = true;
+  }
+}
+
+window.addEventListener("scroll", requestParallax, {passive:true});
+window.addEventListener("resize", requestParallax);
+reduceMotion.addEventListener?.("change", requestParallax);
+requestParallax();
 </script>
+
 </body>
 </html>
